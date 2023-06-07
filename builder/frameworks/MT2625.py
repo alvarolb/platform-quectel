@@ -190,7 +190,7 @@ class MT2625:
         return self.read(read_size)       
 
     def boot(self, timeout):
-        self.s.timeout = 0.05 # maybe must more
+        self.s.timeout = 0.1 # maybe must more
         step = 0
         PB_BEGIN( 'Waiting module for POWER-ON or RESET <' )
         if None != self.plugin: self.p.onBoot(self.s)
@@ -199,7 +199,7 @@ class MT2625:
             step += 1
             self.s.write( b"\xA0" )      
             if self.s.read(1) == b"\x5F":
-                self.s.timeout = 1.0        
+                self.s.timeout = 2.0        
                 self.s.write(b"\x0A\x50\x05")
                 r = self.s.read(3)
                 if r == b"\xF5\xAF\xFA":  
@@ -369,7 +369,7 @@ class MT2625:
 
     def begin(self, nvdm = 0):
         ASSERT( self.chip in self.DA, "Unknown module: {}".format(self.chip) )
-        self.s.timeout = 0.1
+        self.s.timeout = 0.2
         PB_BEGIN( 'Starting <' )
         # DA_1
         offset  = self.DA[self.chip]["1"]["offset"]
@@ -472,7 +472,7 @@ class MT2625:
             bin += data[-rem_last:] 
             DBG("REPLACED LAST PAGE")
         # WRITE
-        self.s.timeout = 1.0
+        self.s.timeout = 2.0
         size = len(bin)
         DBG("BIN SIZE: %08X" % size)
         self.da_write_address(first_address, size)
